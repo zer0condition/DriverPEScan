@@ -38,14 +38,14 @@ void GetCharacteristicsString(DWORD Characteristics, char* Buffer, size_t Buffer
 int MatchesCharacteristics(DWORD Characteristics, DWORD* RequiredCharacteristics, int RequiredCount, DWORD* ExcludedCharacteristics, int ExcludedCount)
 {
     for (int i = 0; i < RequiredCount; i++) {
-        if (!(Characteristics & RequiredCharacteristics[i])) return 0; 
+        if (!(Characteristics & RequiredCharacteristics[i])) return 0;
     }
 
     for (int i = 0; i < ExcludedCount; i++) {
-        if (Characteristics & ExcludedCharacteristics[i]) return 0; 
+        if (Characteristics & ExcludedCharacteristics[i]) return 0;
     }
 
-    return 1; 
+    return 1;
 }
 
 int MatchesSectionName(const char* SectionName, const char** RequiredSections, int SectionCount)
@@ -101,7 +101,6 @@ int ScanPEFile(const char* FilePath, const char** RequiredSections, int SectionC
         char CurrentSectionName[9] = { 0 };
         strncpy(CurrentSectionName, (char*)Section->Name, 8);
 
-        // Check based on defined mode
 #ifdef MATCH_BY_NAME
         if (MatchesSectionName(CurrentSectionName, RequiredSections, SectionCount)) {
 #else
@@ -110,25 +109,24 @@ int ScanPEFile(const char* FilePath, const char** RequiredSections, int SectionC
             GetCharacteristicsString(Section->Characteristics, CharacteristicsStr, sizeof(CharacteristicsStr));
             printf("Found in: %s\n"
                 "    Section Name: %s\n"
+                "    Section Size: %lu bytes\n"
                 "    Characteristics: %s\n",
-                FilePath, CurrentSectionName, CharacteristicsStr);
+                FilePath, CurrentSectionName, Section->SizeOfRawData, CharacteristicsStr);
             Found = 1;
         }
 
 #ifdef MATCH_BY_CHARACTERISTICS
-        // Check characteristics if matching by name is not defined
         if (MatchesCharacteristics(Section->Characteristics, TargetCharacteristics, RequiredCount, ExcludedCharacteristics, ExcludedCount)) {
             GetCharacteristicsString(Section->Characteristics, CharacteristicsStr, sizeof(CharacteristicsStr));
             printf("Found in: %s\n"
                 "    Section Name: %s\n"
                 "    Section Size: %lu bytes\n"
                 "    Characteristics: %s\n",
-                FilePath, Section->SizeOfRawData, CurrentSectionName, CharacteristicsStr);
+                FilePath, CurrentSectionName, Section->SizeOfRawData, CharacteristicsStr);
             Found = 1;
         }
 #endif
     }
-
 
     UnmapViewOfFile(BaseAddr);
     CloseHandle(Mapping);
