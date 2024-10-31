@@ -101,6 +101,7 @@ int ScanPEFile(const char* FilePath, const char** RequiredSections, int SectionC
         char CurrentSectionName[9] = { 0 };
         strncpy(CurrentSectionName, (char*)Section->Name, 8);
 
+        // Check based on defined mode
 #ifdef MATCH_BY_NAME
         if (MatchesSectionName(CurrentSectionName, RequiredSections, SectionCount)) {
 #else
@@ -114,8 +115,19 @@ int ScanPEFile(const char* FilePath, const char** RequiredSections, int SectionC
             Found = 1;
         }
 
-
+#ifdef MATCH_BY_CHARACTERISTICS
+        // Check characteristics if matching by name is not defined
+        if (MatchesCharacteristics(Section->Characteristics, TargetCharacteristics, RequiredCount, ExcludedCharacteristics, ExcludedCount)) {
+            GetCharacteristicsString(Section->Characteristics, CharacteristicsStr, sizeof(CharacteristicsStr));
+            printf("Found in: %s\n"
+                "    Section Name: %s\n"
+                "    Characteristics: %s\n",
+                FilePath, CurrentSectionName, CharacteristicsStr);
+            Found = 1;
         }
+#endif
+    }
+
 
     UnmapViewOfFile(BaseAddr);
     CloseHandle(Mapping);
