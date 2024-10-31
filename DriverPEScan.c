@@ -6,7 +6,12 @@
 
 const char* TargetSections[] = {
     ".tvm0", // tencent vm
-    ".text"
+    "PAGEwx1", // warbird page
+    "PAGEwx2", // warbird page
+    "PAGEwx3", // warbird page
+    "PAGEwx4", // warbird page
+    "PAGEwx5", // warbird page
+    "PAGEwx6"  // warbird page
 };
 int SectionCount = sizeof(TargetSections) / sizeof(TargetSections[0]);
 
