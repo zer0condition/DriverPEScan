@@ -52,7 +52,7 @@ int MatchesSectionName(const char* SectionName, const char** RequiredSections, i
 {
     for (int i = 0; i < SectionCount; i++) {
         if (strcmp(SectionName, RequiredSections[i]) == 0) {
-            return 1; 
+            return 1;
         }
     }
     return 0;
@@ -134,7 +134,7 @@ int ScanPEFile(const char* FilePath, const char** RequiredSections, int SectionC
     CloseHandle(Mapping);
     CloseHandle(File);
     return Found;
-    }
+}
 
 int main()
 {
